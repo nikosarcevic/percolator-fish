@@ -4,7 +4,7 @@
   <img src="_static/pete_gif.gif" alt="Fish in the Percolator" width="200">
 </p>
 
-*A simple Fisher forecasting demonstration using coffee cooling and DerivKit.*
+*A simple Fisher forecasting demonstration using coffee cooling and [DerivKit](https://docs.derivkit.org/main/index.html).*
 
 ## Table of contents
 
