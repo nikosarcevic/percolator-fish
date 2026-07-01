@@ -1,4 +1,8 @@
-# ☕ Fish in the Percolator
+#  Fish in the Percolator
+<p align="center">
+  🐟 · ☕ · 📈
+</p>
+
 
 <p align="center">
   <img src="_static/pete_gif.gif" alt="Fish in the Percolator" width="200">
