@@ -1,5 +1,9 @@
 # ☕ Fish in the Percolator
 
+<p align="center">
+  <img src="_static/petemartell.jpeg" alt="Fish in the Percolator" width="200">
+</p>
+
 *A simple Fisher forecasting demonstration using coffee cooling and DerivKit.*
 
 ## Motivation
