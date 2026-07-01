@@ -10,8 +10,8 @@ from percolator_fish.data import make_coffee_data
 from percolator_fish.plots import plot_coffee_data
 
 
-
 def main() -> None:
+    """Makes, saves, and plots synthetic coffee cooling data."""
     output_dir = Path("data_output")
     plot_dir = Path("plots_output")
     output_dir.mkdir(exist_ok=True)
@@ -24,7 +24,7 @@ def main() -> None:
         data["time_min"],
         data["observed_temperature"],
         data["true_temperature"],
-        float(data["sigma_temperature"]),
+        data["sigma_temperature"],
         plot_dir / "coffee_data.png",
     )
 

@@ -27,7 +27,7 @@ def plot_coffee_data(
         observed_temperature,
         yerr=sigma_temperature,
         fmt="o",
-        color=DK_BLUE,
+        color=DK_RED,
         label="Noisy measurements",
     )
     ax.plot(

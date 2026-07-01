@@ -13,7 +13,7 @@ dependencies = [
 [project.scripts]
 percolator-data = "percolator_fish.scripts.make_coffee_data:main"
 percolator-two-param = "percolator_fish.scripts.plot_two_param_forecast:main"
-percolator-triangle = "percolator_fish.scripts.plot_triangle_forecast:main"
+percolator-full = "percolator_fish.scripts.plot_triangle_forecast:main"
 
 [tool.ruff]
 line-length = 88
