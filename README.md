@@ -55,9 +55,9 @@ larger Fisher forecasts and triangle plots.
 
 Instead of using real data, we generate synthetic measurements.
 
-For a chosen fiducial model
+For a chosen fiducial parameter vector
 
-$$T(t;\theta_0)$$
+$$\theta_0$$
 
 we evaluate the cooling curve
 
