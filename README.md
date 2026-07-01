@@ -6,6 +6,25 @@
 
 *A simple Fisher forecasting demonstration using coffee cooling and DerivKit.*
 
+## Table of contents
+
+* [Motivation](#motivation)
+* [The model](#the-model)
+* [Synthetic observations](#synthetic-observations)
+* [Fisher forecasting](#fisher-forecasting)
+* [Why derivatives?](#why-derivatives)
+* [Why coffee?](#why-coffee)
+* [Running the demo](#running-the-demo)
+* [Interpreting the results](#interpreting-the-results)
+  * [Cooling curve](#cooling-curve)
+  * [Two-parameter forecast](#two-parameter-forecast)
+  * [Triangle plot](#triangle-plot)
+* [Beyond this toy model](#beyond-this-toy-model)
+* [Repository structure](#repository-structure)
+* [License and media credit](#license-and-media-credit)
+
+---
+
 ## Motivation
 
 Many scientific problems involve predicting how well model parameters could be constrained by noisy data.
