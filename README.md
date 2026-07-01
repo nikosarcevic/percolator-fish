@@ -38,7 +38,7 @@ Before fitting any particular data set, we may want to ask forecasting questions
 
 * If the true initial coffee temperature is near a fiducial value, how accurately could we estimate it?
 * If the true cooling time is near a fiducial value, how accurately could we estimate it?
-* Which parameters would be most strongly correlated?
+* If we had a mroe advanced model, which parameters would be most strongly correlated?
 * How would the forecasted uncertainties change if we collected more measurements?
 * How would the forecasted uncertainties change if the measurements were noisier or more precise?
 
@@ -269,7 +269,7 @@ percolator-data
 Create the two-parameter Fisher forecast
 
 ```bash
-percolator-two-param
+percolator-simple
 ```
 
 Create the larger Fisher triangle plot

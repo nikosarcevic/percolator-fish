@@ -12,7 +12,7 @@ dependencies = [
 
 [project.scripts]
 percolator-data = "percolator_fish.scripts.plot_coffee_data:main"
-percolator-two-param = "percolator_fish.scripts.plot_two_param_forecast:main"
+percolator-simple = "percolator_fish.scripts.plot_simple_forecast:main"
 percolator-full = "percolator_fish.scripts.plot_full_forecast:main"
 
 [tool.ruff]

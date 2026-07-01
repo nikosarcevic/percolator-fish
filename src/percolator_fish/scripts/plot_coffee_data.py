@@ -28,20 +28,31 @@ def plot_coffee_data(
         observed_temperature,
         yerr=sigma_temperature,
         fmt="o",
-        color=DK_RED,
+        color="k",
         label="Noisy measurements",
+        markersize=9,
     )
     ax.plot(
         time_min,
         true_temperature,
         color=DK_RED,
-        linewidth=2.0,
+        linewidth=2.5,
         label="True cooling model",
     )
 
-    ax.set_xlabel("Time [min]")
-    ax.set_ylabel("Temperature [°C]")
-    ax.legend(frameon=False)
+    ax.set_xlabel("Time [min]", fontsize=16)
+    ax.set_ylabel("Temperature [°C]", fontsize=16)
+
+    ax.tick_params(
+        axis="both",
+        which="both",
+        direction="in",
+        top=True,
+        right=True,
+        labelsize=14,
+    )
+
+    ax.legend(frameon=False, fontsize=16)
 
     fig.tight_layout()
     fig.savefig(output_path, dpi=200)

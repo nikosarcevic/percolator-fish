@@ -14,7 +14,6 @@ from percolator_fish.fisher import diagonal_data_covariance, derivkit_fisher_for
 from percolator_fish.model import coffee_temperature
 
 DK_RED = "#f21901"
-DK_BLUE = "#0173b2"
 
 DERIVKIT_KWARGS: dict[str, Any] = {
     "method": "finite",
@@ -52,12 +51,12 @@ def main() -> None:
     experiments = [
         CoffeeExperiment(
             label="Short experiment",
-            time_min=np.linspace(0.0, 40.0, 12),
+            time_min=np.linspace(0.0, 40.0, 20),
             sigma_temperature=1.0,
         ),
         CoffeeExperiment(
             label="Long experiment",
-            time_min=np.linspace(0.0, 1000.0, 30),
+            time_min=np.linspace(0.0, 1000.0, 100),
             sigma_temperature=1.0,
         ),
     ]
@@ -89,21 +88,29 @@ def main() -> None:
 
         forecasts.append(forecast)
 
-    plotter = getdist_plots.get_subplot_plotter(width_inch=4.0)
-    plotter.settings.linewidth_contour = 1.5
-    plotter.settings.linewidth = 1.5
+    lw = 2
+    fs = 20
+
+    plotter = getdist_plots.get_subplot_plotter(width_inch=8.0)
+    plotter.settings.linewidth_contour = lw
+    plotter.settings.linewidth = lw
+    plotter.settings.axes_labelsize = fs
+    plotter.settings.axes_fontsize = fs
+    plotter.settings.legend_fontsize = fs
+    plotter.settings.figure_legend_frame = False
 
     plotter.triangle_plot(
         [forecast.gaussian for forecast in forecasts],
         params=forecasts[0].names,
         legend_labels=[experiment.label for experiment in experiments],
         filled=[False, False],
-        contour_colors=[DK_RED, DK_BLUE],
-        contour_lws=[1.5, 1.5],
+        contour_colors=[DK_RED, "k"],
+        contour_lws=[lw, lw],
         contour_ls=["-", "-"],
     )
 
-    plotter.export(str(output_dir / "coffee_two_param_forecast.png"))
+    figname = "coffee_simple_forecast.png"
+    plotter.export(str(output_dir / figname))
 
     for experiment, forecast in zip(experiments, forecasts, strict=True):
         print(f"\n{experiment.label}")
@@ -111,7 +118,7 @@ def main() -> None:
         print("Fisher matrix:")
         print(forecast.fisher)
 
-    print("\nSaved plots_output/coffee_two_param_forecast.png")
+    print(f"\nSaved plots_output/{figname}")
 
 
 if __name__ == "__main__":

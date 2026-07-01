@@ -47,25 +47,31 @@ def main() -> None:
         **DERIVKIT_KWARGS,
     )
 
+    lw = 2
+    fs = 20
+
     plotter = getdist_plots.get_subplot_plotter(width_inch=8.0)
-    plotter.settings.linewidth_contour = 1.3
-    plotter.settings.linewidth = 1.3
+    plotter.settings.linewidth_contour = lw
+    plotter.settings.linewidth = lw
+    plotter.settings.axes_labelsize = fs
+    plotter.settings.axes_fontsize = fs
 
     plotter.triangle_plot(
         [forecast.gaussian],
         params=forecast.names,
         filled=[False],
         contour_colors=[DK_RED],
-        contour_lws=[1.3],
+        contour_lws=[lw],
         contour_ls=["-"],
     )
 
-    plotter.export(str(output_dir / "coffee_triangle_forecast.png"))
+    figname = "coffee_full_forecast.png"
+    plotter.export(str(output_dir / figname))
 
     print("Parameter names:", forecast.names)
     print("Fisher matrix:")
     print(forecast.fisher)
-    print("Saved plots_output/coffee_triangle_forecast.png")
+    print(f"Saved plots_output/{figname}")
 
 
 if __name__ == "__main__":
