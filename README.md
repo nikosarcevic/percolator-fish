@@ -372,18 +372,15 @@ src/
     fisher.py
         DerivKit Fisher utilities.
 
-    plots.py
-        Plotting helpers.
-
 scripts/
-    make_coffee_data.py
-        Generates noisy observations.
+    plot_coffee_data.py
+        Generates noisy observations nad makes a plot.
 
     plot_two_param_forecast.py
-        Produces a two-parameter Fisher forecast.
+        Produces a two-parameter Fisher forecast and plots it.
 
     plot_triangle_forecast.py
-        Produces a larger Fisher triangle plot.
+        Produces a forecast for the advanced model and plots th contours for all the model parameters.
 ```
 
 ---
