@@ -134,11 +134,7 @@ for a parameter vector $\theta$.
 The Fisher matrix is
 
 $$
-F_{ij}
-=
-\frac{\partial\mathbf{d}}{\partial\theta_i}^{\rm T}
-C^{-1}
-\frac{\partial\mathbf{d}}{\partial\theta_j}
+F_{ij} = \frac{\partial\mathbf{d}}{\partial\theta_i}^{\rm T} C^{-1} \frac{\partial\mathbf{d}}{\partial\theta_j}
 $$
 
 where
@@ -185,10 +181,7 @@ $$
 The correlation coefficient between the two parameters is
 
 $$
-\rho_{T_0,\tau}
-=
-\frac{\Sigma_{T_0\tau}}
-{\sqrt{\Sigma_{T_0T_0}\Sigma_{\tau\tau}}}.
+\rho_{T_0,\tau} = \frac{\Sigma_{T_0\tau}} {\sqrt{\Sigma_{T_0T_0}\Sigma_{\tau\tau}}}.
 $$
 
 Values of $\rho$ close to zero indicate weak correlation between the two parameters.
