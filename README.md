@@ -44,9 +44,9 @@ Before fitting any particular data set, we may want to ask forecasting questions
 
 Here, **fiducial** means the parameter values that we assume to be true when building the forecast.
 
-These are exactly the kinds of questions addressed by **Fisher forecasting**.
+These are exactly the kinds of questions addressed by **[Fisher forecasting](https://en.wikipedia.org/wiki/Fisher_information)**.
 
-This repository provides a small demonstration of Fisher forecasting using **Newton's law of cooling**, with forecasts computed using **DerivKit**.
+This repository provides a small demonstration of Fisher forecasting using **[Newton's law of cooling](https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling)**, with forecasts computed using **DerivKit**.
 
 Although the example is intentionally simple, the same workflow scales to much larger scientific models with many parameters.
 
