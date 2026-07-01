@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from getdist import plots as getdist_plots
@@ -15,10 +16,25 @@ from percolator_fish.model import coffee_temperature
 DK_RED = "#f21901"
 DK_BLUE = "#0173b2"
 
+DERIVKIT_KWARGS: dict[str, Any] = {
+    "method": "finite",
+    "stepsize": 1e-2,
+    "num_points": 5,
+    "extrapolation": "ridders",
+    "levels": 4,
+}
+
 
 @dataclass(frozen=True)
 class CoffeeExperiment:
-    """Defines one assumed coffee observing setup."""
+    """Defines one assumed coffee observing setup.
+
+    Attributes:
+        label: Name used in printed output and plot legends.
+        time_min: Measurement times in minutes.
+        sigma_temperature: Assumed independent temperature uncertainty in
+            degrees Celsius for each measurement.
+    """
 
     label: str
     time_min: np.ndarray
@@ -26,6 +42,7 @@ class CoffeeExperiment:
 
 
 def main() -> None:
+    """Runs the two parameter coffee cooling Fisher forecast."""
     output_dir = Path("plots_output")
     output_dir.mkdir(exist_ok=True)
 
@@ -49,7 +66,10 @@ def main() -> None:
 
     for experiment in experiments:
 
-        def model(theta: np.ndarray, time_min: np.ndarray = experiment.time_min) -> np.ndarray:
+        def model(
+            theta: np.ndarray,
+            time_min: np.ndarray = experiment.time_min,
+        ) -> np.ndarray:
             """Returns the coffee temperature data vector."""
             return coffee_temperature(theta, time_min)
 
@@ -64,7 +84,7 @@ def main() -> None:
             cov=cov,
             names=["T0", "tau"],
             labels=[r"T_0", r"\tau"],
-            stepsize=1e-2,
+            **DERIVKIT_KWARGS,
         )
 
         forecasts.append(forecast)

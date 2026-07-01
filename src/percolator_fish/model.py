@@ -1,4 +1,4 @@
-"""Coffee cooling models for DerivKit Fisher demos."""
+"""Coffee cooling models used in the DerivKit Fisher forecast demos."""
 
 from __future__ import annotations
 
@@ -11,15 +11,25 @@ def coffee_temperature(
     *,
     room_temperature: float = 22.0,
 ) -> np.ndarray:
-    """Predicts coffee temperature using Newton cooling.
+    """Evaluates a Newton cooling model for a cup of coffee.
+
+    The model assumes that the coffee temperature relaxes exponentially toward
+    a fixed room temperature,
+
+        T(t) = T_room + (T_0 - T_room) exp(-t / tau),
+
+    where ``T_0`` is the initial coffee temperature and ``tau`` is the cooling
+    time scale.
 
     Args:
-        theta: Model parameters ``[initial_temperature, cooling_time]``.
+        theta: Parameter vector ``[initial_temperature, cooling_time]``.
+            ``initial_temperature`` is measured in degrees Celsius and
+            ``cooling_time`` is measured in minutes.
         time_min: Measurement times in minutes.
         room_temperature: Fixed ambient room temperature in degrees Celsius.
 
     Returns:
-        Coffee temperature in degrees Celsius.
+        Model coffee temperatures in degrees Celsius evaluated at ``time_min``.
     """
     initial_temperature, cooling_time = theta
 
@@ -32,7 +42,42 @@ def advanced_coffee_temperature(
     theta: np.ndarray,
     time_min: np.ndarray,
 ) -> np.ndarray:
-    """Predicts coffee temperature with intentionally coupled parameters."""
+    """Evaluates a four parameter coffee cooling model with degeneracies.
+
+    This model extends pure Newton cooling by allowing the ambient room
+    temperature and the cup properties to vary. It is designed as a forecasting
+    demo: the parameters affect the temperature curve in overlapping ways, so
+    the Fisher matrix produces visible parameter degeneracies.
+
+    The parameter vector is
+
+        ``[initial_temperature, room_temperature, cooling_time, cup_factor]``.
+
+    Args:
+        theta: Parameter vector for the advanced cooling model.
+
+            ``initial_temperature``:
+                Initial coffee temperature in degrees Celsius. This controls
+                the starting temperature and the overall cooling amplitude.
+
+            ``room_temperature``:
+                Ambient room temperature in degrees Celsius. This controls the
+                long time temperature that the coffee relaxes toward.
+
+            ``cooling_time``:
+                Exponential cooling time scale in minutes. Larger values make
+                the coffee cool more slowly.
+
+            ``cup_factor``:
+                Dimensionless factor that rescales the effective cooling time.
+                Values larger than one mimic a more insulating cup, while values
+                smaller than one mimic a cup that lets the coffee cool faster.
+
+        time_min: Measurement times in minutes.
+
+    Returns:
+        Model coffee temperatures in degrees Celsius evaluated at ``time_min``.
+    """
     initial_temperature, room_temperature, cooling_time, cup_factor = theta
 
     amplitude = initial_temperature - room_temperature

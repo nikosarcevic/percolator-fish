@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from getdist import plots as getdist_plots
@@ -12,9 +13,17 @@ from percolator_fish.model import advanced_coffee_temperature
 
 DK_RED = "#f21901"
 
+DERIVKIT_KWARGS: dict[str, Any] = {
+    "method": "finite",
+    "stepsize": 1e-3,
+    "num_points": 5,
+    "extrapolation": "ridders",
+    "levels": 4,
+}
 
 
 def main() -> None:
+    """Runs the multi parameter coffee cooling Fisher forecast."""
     output_dir = Path("plots_output")
     output_dir.mkdir(exist_ok=True)
 
@@ -25,7 +34,7 @@ def main() -> None:
     theta0 = np.array([90.0, 22.0, 25.0, 1.0])
 
     def model(theta: np.ndarray) -> np.ndarray:
-        """Returns the extended coffee temperature data vector."""
+        """Returns the advanced coffee temperature data vector."""
         return advanced_coffee_temperature(theta, time_min)
 
     forecast = derivkit_fisher_forecast(
@@ -34,13 +43,14 @@ def main() -> None:
         cov=cov,
         names=["T0", "Troom", "tau", "cup"],
         labels=[r"T_0", r"T_{\rm room}", r"\tau", r"c_{\rm cup}"],
-        stepsize=1e-3,
         prior_sigma=np.array([80.0, 80.0, 80.0, 4.0]),
+        **DERIVKIT_KWARGS,
     )
 
     plotter = getdist_plots.get_subplot_plotter(width_inch=8.0)
     plotter.settings.linewidth_contour = 1.3
     plotter.settings.linewidth = 1.3
+
     plotter.triangle_plot(
         [forecast.gaussian],
         params=forecast.names,
@@ -49,6 +59,7 @@ def main() -> None:
         contour_lws=[1.3],
         contour_ls=["-"],
     )
+
     plotter.export(str(output_dir / "coffee_triangle_forecast.png"))
 
     print("Parameter names:", forecast.names)
