@@ -42,7 +42,7 @@ def main() -> None:
         theta0=theta0,
         cov=cov,
         names=["T0", "Troom", "tau", "cup"],
-        labels=[r"T_0", r"T_{\rm room}", r"\tau", r"c_{\rm cup}"],
+        labels=[r"T_0", r"T_{\rm room}", r"\tau", r"f_{\rm cup}"],
         prior_sigma=np.array([80.0, 80.0, 80.0, 4.0]),
         **DERIVKIT_KWARGS,
     )
