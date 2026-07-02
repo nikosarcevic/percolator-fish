@@ -177,6 +177,9 @@ where
 * $C$ is the data covariance matrix,
 * $\partial\mathbf d/\partial\theta_i$ is the derivative of the model with respect to parameter $i$.
 
+This is the common fixed covariance form of the Fisher matrix. 
+More general forms can also include derivatives of the covariance matrix,
+but here we keep $C$ fixed to focus on the model derivatives.
 The Fisher matrix approximates the local curvature of the likelihood around the fiducial model.
 
 A Fisher forecast does not by itself find the best-fitting parameter values.
