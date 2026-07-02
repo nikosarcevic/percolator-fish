@@ -46,9 +46,11 @@ Here, **fiducial** means the parameter values that we assume to be true when bui
 
 These are exactly the kinds of questions addressed by **[Fisher forecasting](https://en.wikipedia.org/wiki/Fisher_information)**.
 
-This repository provides a small demonstration of Fisher forecasting using **[Newton's law of cooling](https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling)**, with forecasts computed using **DerivKit**.
+This repository provides a small demonstration of Fisher forecasting
+using **[Newton's law of cooling](https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling)**, with forecasts computed using **DerivKit**.
 
-Although the example is intentionally simple, the same workflow scales to much larger scientific models with many parameters.
+Although the example is intentionally simple, the same workflow scales to much 
+larger scientific models with many parameters.
 
 ---
 
@@ -81,25 +83,29 @@ Later we introduce additional nuisance parameters to illustrate larger Fisher fo
 
 ### Advanced model
 
-The simplest model forecasts only the initial coffee temperature and cooling time,
+The simple model above is useful for introducing the basic Fisher forecasting workflow because
+it varies only two parameters,
 
 $$
 \theta = (T_0, \tau).
 $$
 
-To make the example closer to a realistic Fisher forecast, the full demo also includes an advanced model with more parameters.
+The full demo then uses a slightly more flexible cooling model to make the forecast more interesting.
+This advanced model varies four parameters:
 
-In this model, the temperature is still based on exponential cooling, but we allow additional parameters to vary. This creates a larger parameter vector and therefore a larger Fisher matrix.
+$$
+\theta = (T_0, T_{\rm room}, \tau, f_{\rm cup}),
+$$
 
-The purpose of the advanced model is not to make coffee cooling more realistic. Instead, it demonstrates what happens when a forecast includes several parameters at once:
+where $T_{\rm room}$ is the room temperature and $f_{\rm cup}$ is a dimensionless cup factor.
 
-* some parameters are tightly constrained,
-* some parameters are weakly constrained,
-* some parameters are correlated with each other,
-* some combinations of parameters are degenerate.
+The cup factor rescales the effective cooling time. Values larger than one mimic a more insulating cup,
+while values smaller than one mimic a cup that lets the coffee cool faster. 
+The model also includes small extra temperature terms that make the parameter effects overlap more strongly.
 
-This is why the advanced model is useful for showing a triangle plot. The triangle plot summarizes all one dimensional and two dimensional marginalized constraints from the full Fisher covariance matrix.
-
+This is useful for the demo because realistic Fisher forecasts often include several parameters whose
+effects are partially degenerate. The advanced coffee model creates those visible correlations while
+keeping the physics easy to understand.
 
 ---
 
@@ -127,7 +133,8 @@ $$
 
 This produces a mock experiment that illustrates what the data might look like.
 
-The Fisher forecast then asks how precisely the parameters could be constrained for this experimental setup, assuming the true model is close to the fiducial model.
+The Fisher forecast then asks how precisely the parameters could be constrained
+for this experimental setup, assuming the true model is close to the fiducial model.
 
 ---
 
@@ -135,15 +142,21 @@ The Fisher forecast then asks how precisely the parameters could be constrained 
 
 There are different ways to think about learning parameters from data.
 
-In a **frequentist** approach, the model parameters are treated as fixed but unknown numbers, while the data are treated as random outcomes of a repeatable experiment.
-If we could repeat the same coffee cooling experiment many times, each noisy data set would give slightly different best-fitting parameter estimates.
+In a **[frequentist](https://en.wikipedia.org/wiki/Frequentist_probability)** approach,
+the model parameters are treated as fixed but unknown numbers, while the data are treated
+as random outcomes of a repeatable experiment.
+If we could repeat the same coffee cooling experiment many times, each noisy data set 
+would give slightly different best-fitting parameter estimates.
 
-In a **Bayesian** approach, the observed data are fixed, and the parameters are treated as uncertain quantities that we want to infer.
-The model tells us how likely the data are for a given set of parameters, and Bayes' theorem turns this around into a posterior distribution for the parameters.
+In a **[Bayesian](https://en.wikipedia.org/wiki/Bayesian_probability)** approach,
+the observed data are fixed, and the parameters are treated as uncertain quantities that we want to infer.
+The model tells us how likely the data are for a given set of parameters, and Bayes' theorem 
+turns this around into a posterior distribution for the parameters.
 
 Fisher forecasting is closely related to both viewpoints.
 It does not fit one particular noisy data set.
-Instead, it asks how much information an experiment is expected to contain about the parameters, assuming the true model is close to a chosen fiducial point.
+Instead, it asks how much information an experiment is expected to contain about the parameters, 
+assuming the true model is close to a chosen fiducial point.
 
 Suppose our model predicts a data vector
 
@@ -330,19 +343,19 @@ plots_output/coffee_full_forecast.png
 
 ### Cooling curve
 
-The first plot shows the synthetic coffee cooling data compared to the theoretical curve.
+The first plot shows synthetic coffee cooling data compared to the simple Newton cooling model.
 
 <p align="center">
   <img src="plots_output/coffee_data.png" alt="Synthetic coffee cooling data" width="400">
 </p>
 
-The points represent noisy mock temperature measurements.
+The points represent noisy mock temperature measurements. 
 The smooth curve shows the fiducial cooling model used to generate the data.
 
-This plot shows the mock experiment before any Fisher calculation is done.
-The Fisher forecast does not fit these noisy points directly. Instead, it uses the assumed model,
-fiducial parameters, noise level, and model derivatives to estimate *how well the parameters could
-be constrained*.
+This plot shows the mock experiment before any Fisher calculation is done. 
+The Fisher forecast does not fit these noisy points directly.
+Instead, it uses the assumed model, fiducial parameters, noise level,
+and model derivatives to estimate **how well the parameters could be constrained**.
 
 Note that we use two cooling models in this repository. 
 The first is the simple Newton cooling model presented above, where the forecast varies the 
@@ -401,13 +414,16 @@ forecast predicts tighter parameter constraints.
 This is the basic idea of a Fisher forecast: it predicts the expected local uncertainty around
 the fiducial model for a specified experimental setup.
 
-
 ---
 
 <details>
 <summary><strong>Advanced model and full triangle plot</strong></summary>
 
-The full forecast uses a larger parameter vector.
+The full forecast uses the advanced four parameter cooling model introduced above,
+
+$$
+\theta = (T_0, T_{\rm room}, \tau, f_{\rm cup}).
+$$
 
 This is meant to mimic the structure of more realistic scientific forecasts, 
 where the model often contains both main physical parameters and additional nuisance parameters.
@@ -427,11 +443,10 @@ The shape of each contour tells us how the two parameters interact:
 * long narrow contours indicate strong degeneracy.
 
 This plot is useful because it shows the full covariance structure of the forecast. 
-Instead of looking at one parameter pair, the triangle plot lets us see all pairwise
+Instead of looking at one parameter pair, the triangle plot lets us see all pairwise 
 degeneracies in the model at once.
 
 </details>
-
 
 ---
 
