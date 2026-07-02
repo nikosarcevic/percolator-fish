@@ -48,16 +48,27 @@ def main() -> None:
     data = make_coffee_data()
     theta0 = data["theta0"]
 
+    short_time = np.linspace(0.0, 40.0, 20)
+
+    long_time = np.unique(
+        np.concatenate(
+            [
+                short_time,
+                np.linspace(40.0, 120.0, 80),
+            ]
+        )
+    )
+
     experiments = [
         CoffeeExperiment(
             label="Short experiment",
-            time_min=np.linspace(0.0, 40.0, 20),
-            sigma_temperature=1.0,
+            time_min=short_time,
+            sigma_temperature=0.05,
         ),
         CoffeeExperiment(
             label="Long experiment",
-            time_min=np.linspace(0.0, 1000.0, 100),
-            sigma_temperature=1.0,
+            time_min=long_time,
+            sigma_temperature=0.05,
         ),
     ]
 

@@ -79,6 +79,28 @@ while keeping the room temperature fixed.
 
 Later we introduce additional nuisance parameters to illustrate larger Fisher forecasts and triangle plots.
 
+### Advanced model
+
+The simplest model forecasts only the initial coffee temperature and cooling time,
+
+$$
+\theta = (T_0, \tau).
+$$
+
+To make the example closer to a realistic Fisher forecast, the full demo also includes an advanced model with more parameters.
+
+In this model, the temperature is still based on exponential cooling, but we allow additional parameters to vary. This creates a larger parameter vector and therefore a larger Fisher matrix.
+
+The purpose of the advanced model is not to make coffee cooling more realistic. Instead, it demonstrates what happens when a forecast includes several parameters at once:
+
+* some parameters are tightly constrained,
+* some parameters are weakly constrained,
+* some parameters are correlated with each other,
+* some combinations of parameters are degenerate.
+
+This is why the advanced model is useful for showing a triangle plot. The triangle plot summarizes all one dimensional and two dimensional marginalized constraints from the full Fisher covariance matrix.
+
+
 ---
 
 ## Synthetic observations
@@ -198,14 +220,16 @@ The sign of $\rho$ tells us the direction of the degeneracy:
 
 Computing the Fisher matrix requires derivatives of the model with respect to every parameter.
 
-Derivatives describe how the predicted data change when a parameter is changed.
-In the coffee example, they tell us how the cooling curve responds if we slightly change the initial temperature, the cooling time, or any other model parameter.
+In general, derivatives describe how one quantity changes when another quantity is changed.
+In a Fisher forecast, they describe how the predicted data change when each model parameter is varied.
 
-This is what makes derivatives useful for forecasting.
-If changing a parameter produces a large change in the predicted data, that parameter can usually be constrained well.
-If changing a parameter produces only a small change, or produces a change that looks very similar to another parameter, then the parameter will be harder to constrain or more strongly degenerate.
+In the coffee example, the derivatives tell us how the cooling curve responds if we slightly change the 
+initial temperature, the cooling time, or any other model parameter. If changing a parameter produces a
+large change in the predicted temperatures, then that parameter is easier to constrain.
+If changing a parameter produces only a small change, or produces a change that looks similar to the effect
+of another parameter, then that parameter is harder to constrain or becomes degenerate with the other parameter.
 
-For this small toy model the derivatives could be derived analytically.
+For this small toy model, the derivatives could be derived analytically.
 
 However, realistic scientific models often involve
 
@@ -215,9 +239,12 @@ However, realistic scientific models often involve
 * external software,
 * many parameters.
 
-In these situations computing derivatives accurately and efficiently becomes one of the main challenges.
+In these situations, computing derivatives accurately and efficiently becomes one of the main challenges.
 
-This is exactly the problem solved by **DerivKit**.
+This is exactly the kind of problem that **DerivKit** is designed to handle.
+DerivKit takes care of the numerical derivative calculation and Fisher matrix construction. 
+The user only needs to provide a model that maps parameters to observables, together with a data 
+covariance matrix. DerivKit then turns those ingredients into a Fisher forecast.
 
 ---
 
@@ -254,28 +281,47 @@ or any scientific model that predicts observables from parameters.
 
 ## Running the demo
 
-Install
+Install the package in editable mode:
 
 ```bash
 pip install -e .
 ```
 
-Generate synthetic observations
+Generate synthetic coffee cooling observations:
 
 ```bash
 percolator-data
 ```
 
-Create the two-parameter Fisher forecast
+This creates
+
+```text
+data_output/coffee_data.npz
+plots_output/coffee_data.png
+```
+
+Create the simple Fisher forecast:
 
 ```bash
 percolator-simple
 ```
 
-Create the larger Fisher triangle plot
+This creates
+
+```text
+plots_output/coffee_simple_forecast.png
+```
+
+Create the full Fisher triangle plot:
 
 ```bash
 percolator-full
+```
+
+This creates
+
+```text
+plots_output/coffee_full_forecast.png
 ```
 
 ---
@@ -284,48 +330,108 @@ percolator-full
 
 ### Cooling curve
 
-The first figure shows
+The first plot shows the synthetic coffee cooling data compared to the theoretical curve.
 
-* noisy synthetic temperature measurements,
-* the fiducial cooling model.
+<p align="center">
+  <img src="plots_output/coffee_data.png" alt="Synthetic coffee cooling data" width="400">
+</p>
 
-This represents the mock experiment.
+The points represent noisy mock temperature measurements.
+The smooth curve shows the fiducial cooling model used to generate the data.
+
+This plot shows the mock experiment before any Fisher calculation is done.
+The Fisher forecast does not fit these noisy points directly. Instead, it uses the assumed model,
+fiducial parameters, noise level, and model derivatives to estimate *how well the parameters could
+be constrained*.
+
+Note that we use two cooling models in this repository. 
+The first is the simple Newton cooling model presented above, where the forecast varies the 
+initial coffee temperature and the cooling time, while the room temperature is held fixed.
+The second is a more advanced model that also depends on the initial coffee temperature, 
+but varies additional parameters at the same time: the room temperature, the cooling time, 
+and a dimensionless cup factor. The cup factor rescales the effective cooling time, so values
+larger than one mimic a more insulating cup, while values smaller than one mimic a cup that 
+lets the coffee cool faster. The advanced model also includes small extra temperature terms 
+that make the parameter effects overlap more strongly. This is useful for the demo because it
+creates visible correlations and degeneracies in the Fisher forecast, making the full triangle
+plot more informative.
 
 ---
 
-### Two-parameter forecast
+### Simple Fisher forecast
 
-The second figure shows forecasted confidence ellipses for
+The second plot shows the Fisher forecast for the simple two parameter cooling model.
 
-* initial temperature,
-* cooling time.
+<p align="center">
+  <img src="plots_output/coffee_simple_forecast.png" alt="Simple two parameter Fisher forecast" width="400">
+</p>
 
-The ellipse illustrates
+In this case, the model varies only two parameters,
 
-* forecasted parameter uncertainties,
-* forecasted parameter correlations.
+$$
+\theta = (T_0, \tau),
+$$
 
-A narrow ellipse corresponds to well-constrained parameters.
+where $T_0$ is the initial coffee temperature and $\tau$ is the cooling time.
 
-A tilted ellipse indicates that increasing one parameter can be partially compensated by changing another.
+The plot compares two different mock observing setups:
 
-The ellipse should be interpreted as the expected local constraint near the fiducial model, not as a direct fit to the particular noisy realization.
+* **Short experiment**, shown in red,
+* **Long experiment**, shown in black.
+
+Both forecasts use the same underlying cooling model and the same temperature uncertainty per
+measurement, but they use different time ranges and numbers of measurements. The short experiment
+observes the coffee over a shorter time interval, while the long experiment observes it for longer
+and collects more data points.
+
+The contours show the expected joint constraints on the initial coffee temperature and the cooling time.
+The width of each contour shows the forecasted uncertainty. The tilt of each contour shows the parameter
+correlation.
+
+A tilted contour means that changing one parameter can be partly compensated by changing the other.
+For example, a hotter initial coffee temperature and a different cooling time can produce similar 
+temperatures over the observed time range.
+
+This is directly analogous to survey forecasts in astronomy. When people compare something like 
+a Year 1 and Year 10 survey forecast, they are asking how the parameter constraints improve as 
+the survey gets more observing time, more data, and better statistics. Here, the long coffee 
+experiment plays the role of the deeper or longer survey: it has more information, so the Fisher
+forecast predicts tighter parameter constraints.
+
+This is the basic idea of a Fisher forecast: it predicts the expected local uncertainty around
+the fiducial model for a specified experimental setup.
+
 
 ---
 
-### Triangle plot
+<details>
+<summary><strong>Advanced model and full triangle plot</strong></summary>
 
-The final figure extends the model to additional parameters.
+The full forecast uses a larger parameter vector.
 
-Each diagonal panel shows the marginalized forecast for one parameter.
+This is meant to mimic the structure of more realistic scientific forecasts, 
+where the model often contains both main physical parameters and additional nuisance parameters.
 
-Each off-diagonal panel shows the joint forecast for a pair of parameters.
+<p align="center">
+  <img src="plots_output/coffee_full_forecast.png" alt="Full Fisher triangle plot" width="400">
+</p>
 
-Circular contours indicate nearly independent parameters.
+The diagonal panels show the marginalized forecast for each individual parameter.
 
-Tilted ellipses indicate correlated parameters.
+The off diagonal panels show the joint forecast for each pair of parameters.
 
-Long thin ellipses indicate strong parameter degeneracies.
+The shape of each contour tells us how the two parameters interact:
+
+* nearly circular contours indicate weak correlation,
+* tilted contours indicate correlated parameters,
+* long narrow contours indicate strong degeneracy.
+
+This plot is useful because it shows the full covariance structure of the forecast. 
+Instead of looking at one parameter pair, the triangle plot lets us see all pairwise
+degeneracies in the model at once.
+
+</details>
+
 
 ---
 
@@ -355,34 +461,42 @@ Confidence contours
 Scientific interpretation
 ```
 
-The exact same workflow is used in many areas of modern computational science, where DerivKit automates the derivative calculations that make Fisher forecasting possible.
+The **exact same principle** is used in many areas of modern computational science,
+where DerivKit automates the derivative calculations that make Fisher forecasting possible. 
+The user only needs to supply a model that maps parameters to observables, along with a 
+corresponding data covariance matrix. DerivKit then handles the numerical derivatives and
+Fisher matrix construction, making it easier to move from a scientific model to forecasted
+parameter constraints.
 
 ---
 
 ## Repository structure
 
 ```text
-src/
-    model.py
-        Coffee cooling models.
-
-    data.py
-        Synthetic data generation.
-
-    fisher.py
-        DerivKit Fisher utilities.
-
-scripts/
-    plot_coffee_data.py
-        Generates noisy observations nad makes a plot.
-
-    plot_two_param_forecast.py
-        Produces a two-parameter Fisher forecast and plots it.
-
-    plot_triangle_forecast.py
-        Produces a forecast for the advanced model and plots th contours for all the model parameters.
+.
+├── README.md
+├── LICENSE
+├── pyproject.toml
+├── _static/
+│   ├── pete_gif.gif
+│   └── petemartell.jpeg
+├── data_output/
+│   └── coffee_data.npz
+├── plots_output/
+│   ├── coffee_data.png
+│   ├── coffee_simple_forecast.png
+│   └── coffee_full_forecast.png
+└── src/
+    └── percolator_fish/
+        ├── __init__.py
+        ├── data.py
+        ├── fisher.py
+        ├── model.py
+        └── scripts/
+            ├── plot_coffee_data.py
+            ├── plot_simple_forecast.py
+            └── plot_full_forecast.py
 ```
-
 ---
 
 ## License and media credit
